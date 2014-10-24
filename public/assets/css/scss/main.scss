@@ -1,0 +1,63 @@
+// http://bootswatch.com/cerulean/
+// MuseoSans-100Italic.otf   
+// MuseoSans-900Italic.otf    
+// Museo_Slab_500italic.otf
+// MuseoSans-100.otf         
+// MuseoSans_900.otf          
+// Museo_Slab_500.otf
+// MuseoSans-300Italic.otf   
+// Museo_Slab_1000italic.otf  
+// Museo_Slab_700italic.otf
+// MuseoSans-300.otf         
+// Museo_Slab_1000.otf        
+// Museo_Slab_700.otf
+// MuseoSans_500_Italic.otf  
+// Museo_Slab_100italic.otf   
+// Museo_Slab_900italic.otf
+// MuseoSans_500.otf         
+// Museo_Slab_100.otf         
+// Museo_Slab_900.otf
+// MuseoSans-700Italic.otf   
+// Museo_Slab_300italic.otf
+// MuseoSans_700.otf         
+// Museo_Slab_300.otf
+
+@include font-face("Museo_Slab_500", "/assets/Museo", "Museo_Slab_500", normal, normal);
+@include font-face("Museo_Slab_300", "/assets//fonts/Museo", "Museo_Slab_300", normal, normal);
+@include font-face("Museo_Slab_700", "/assets/fonts/Museo", "Museo_Slab_700", normal, normal);
+
+html, body 
+{
+    height: 100%;
+}
+
+.height-100p
+{
+	height:100%;
+}
+
+.error 
+{
+	color:red;
+}
+
+.formParseUrl.preload 
+{
+	&:before 
+	{
+		position: absolute;
+		content:"";
+		display: block;
+		width:100%;
+		height: 100%;
+		left:0;
+		top:0;
+		right:0;
+		bottom:0;
+		background: rgba(0,0,0,0.5);
+		background-image: url('../images/preloader.gif');
+		background-position: center;
+		background-repeat: no-repeat;
+		z-index: 100500;
+	}
+}

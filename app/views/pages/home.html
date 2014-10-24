@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title><%- title %></title>
+	<link rel="stylesheet" href="/assets/css/style.min.css">
+	<script src="/assets/js/lib/require.js" data-main="/assets/js/app/main.js"></script>
+</head>
+<body>
+	
+	<div class="container container-sm-height height-100p">
+		
+		<div class="row row-sm-height">
+
+			<div class="col-sm-8 col-sm-offset-2 col-sm-height col-middle">
+				<form id="formParseUrl" class="formParseUrl">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-sm-6">
+								<input class="form-control" type="text" placeholder="insert url" name="url" value="http://www.reddit.com/r/javascript/.json">
+							</div>
+							<div class="col-sm-3">
+								<input class="form-control" type="text" name="separator" placeholder="separator">
+							</div>
+							<div class="col-sm-3">
+								<label>
+									<input type="checkbox" name="savetofile">
+									save to file
+								</label>
+							</div>
+						</div>
+					</div>
+					
+
+					<br>
+					<div>
+						<label><input type="checkbox" name="show[]" value="gilded" checked>&nbsp; see gilded</label>
+						<br>
+						<label><input type="checkbox" name="show[]" value="num_comments" checked>&nbsp; see num_comments</label>
+						<br>
+						<label><input type="checkbox" name="show[]" value="ups" checked>&nbsp; see ups</label>
+						<br>
+						<label><input type="checkbox" name="show[]" value="downs" checked>&nbsp; see downs</label>
+						<br>
+						<label><input type="checkbox" name="show[]" value="score" checked>&nbsp; see score</label>
+					</div>
+					<div class="errors_block"></div>
+					<button type="submit"  class="btn btn-default">Submit</button>
+				</form>
+					<br>
+				<textarea class="results_block form-control" style="height:300px"></textarea>
+			</div>
+		</div>	
+
+	</div>
+
+</body>
+</html>

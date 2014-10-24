@@ -1,0 +1,19 @@
+{
+	"name": "njs",
+	"description": "njs",
+	"version": "0.0.1",
+	"private": true,
+
+	"dependencies": {
+		"consolidate": "0.10.0",
+		"express": "3.2.5",
+		"twostep": "0.4.1",
+		"conform": "0.2.8",
+		"underscore": "1.5.2"
+	},
+
+	"engines": {
+		"node": "0.8.4",
+		"npm": "1.1.49"
+	}
+}
