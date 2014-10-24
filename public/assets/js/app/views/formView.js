@@ -43,7 +43,7 @@ define([
 
 				if(this.$el.find('input[name="savetofile"]').is(':checked')){
 					self.$el.removeClass('preload');
-					window.open('/agregateresultfile?'+this.$el.serialize());
+					document.location.href = '/agregateresultfile?'+this.$el.serialize();
 					return;
 				}
 

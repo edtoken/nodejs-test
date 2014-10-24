@@ -11,11 +11,19 @@ http = require('http');
 var AgregateModel = function(data) {
 	this.data = data;
 	this.options = {
+		order_by:'count',
+		order_dir:1,
 		separator:",",
 		fields:[],
 		fieldsDefault: ["gilded", "num_comments", "ups", "downs", "score"]
 	};
-	
+
+	if(this.data.order_by && this.options.fieldsDefault.indexOf(this.data.order_by) >= 0){
+		this.options.order_by = this.data.order_by;
+	}
+
+	this.options.order_dir = (this.data.order_dir === "0")? 0 : 1;
+
 	this.options.fields = _.filter(this.data.show, function(name) {
 		return this.options.fieldsDefault.indexOf(name) >= 0;
 	}, this);
@@ -46,14 +54,15 @@ AgregateModel.prototype._agregateItemData = function(oldObj, newData) {
 		obj = oldObj;
 	}
 
+	obj.domain = newData.domain;
 	obj.count = (obj.count) ? obj.count + 1 : 1;
 
 	_.each(this.options.fieldsDefault, function(name) {
 		if (this.options.fields.indexOf(name) >= 0) {
 			if (_.has(obj, name)) {
-				obj[name] += +newData[name]
+				obj[name] += parseInt(newData[name])
 			} else {
-				obj[name] = +newData[name];
+				obj[name] = parseInt(newData[name]);
 			}
 		}
 	}, this);
@@ -67,6 +76,7 @@ AgregateModel.prototype._agregateItemData = function(oldObj, newData) {
  * @returns {*}
  * @private
  */
+
 AgregateModel.prototype._parseRequest = function(obj) {
 
 
@@ -74,6 +84,7 @@ AgregateModel.prototype._parseRequest = function(obj) {
 		return this._getErrorObj("invalid json data");
 	}
 
+	var responseOut;
 	var response = {};
 	var items = obj.data.children;
 
@@ -83,7 +94,17 @@ AgregateModel.prototype._parseRequest = function(obj) {
 		}
 	}, this);
 
-	return response;
+	responseOut = _.sortBy(response, function(item){
+		if(item[this.options.order_by]){
+			return item[this.options.order_by];
+		}
+	}, this);
+
+	if(this.options.order_dir === 0){
+		responseOut.reverse();
+	}
+
+	return responseOut;
 };
 
 /**
@@ -125,19 +146,8 @@ AgregateModel.prototype._createCSVResponse = function(obj) {
 	var responseCSV = "";
 
 	_.each(obj, function(val, domain) {
-
-		var arr = _.sortBy(_.pairs(val), function(item) {
-			return item[1];
-		});
-
-		responseCSV += '"' + domain +'"';
-
-		responseCSV += _.map(arr, function(item) {
-			return separator + ' "' + item.join('"'+separator+'"') + '"';
-		}).join('');
-
+		responseCSV += _.values(val).join(separator);
 		responseCSV += "\r\n";
-
 	});
 
 	return responseCSV;

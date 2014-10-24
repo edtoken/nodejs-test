@@ -19,33 +19,62 @@
 							<div class="col-sm-6">
 								<input class="form-control" type="text" placeholder="insert url" name="url" value="http://www.reddit.com/r/javascript/.json">
 							</div>
-							<div class="col-sm-3">
+							<div class="col-sm-6">
 								<input class="form-control" type="text" name="separator" placeholder="separator">
 							</div>
-							<div class="col-sm-3">
-								<label>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-sm-6">
+								<label><input type="checkbox" name="show[]" value="gilded" checked>&nbsp; see gilded</label>
+								<br>
+								<label><input type="checkbox" name="show[]" value="num_comments" checked>&nbsp; see num_comments</label>
+								<br>
+								<label><input type="checkbox" name="show[]" value="ups" checked>&nbsp; see ups</label>
+								<br>
+								<label><input type="checkbox" name="show[]" value="downs" checked>&nbsp; see downs</label>
+								<br>
+								<label><input type="checkbox" name="show[]" value="score" checked>&nbsp; see score</label>
+							</div>
+							<div class="col-sm-6">
+
+								<label class="form-control">
 									<input type="checkbox" name="savetofile">
 									save to file
 								</label>
+
+								<select class="form-control" name="order_by">
+									<option value="count">sort by count</option>
+									<option value="gilded">sort by gilded</option>
+									<option value="num_comments">sort by num_comments</option>
+									<option value="ups">sort by ups</option>
+									<option value="downs">sort by downs</option>
+									<option value="score">sort by score</option>
+								</select>
+
+								<br>
+
+								<select class="form-control" name="order_dir">
+									<option value="1">ASC</option>
+									<option value="0">DESC</option>
+								</select>
+
 							</div>
 						</div>
 					</div>
-					
+
+					<div class="row">
+						<div class="col-sm-12 errors_block"></div>
+					</div>
 
 					<br>
-					<div>
-						<label><input type="checkbox" name="show[]" value="gilded" checked>&nbsp; see gilded</label>
-						<br>
-						<label><input type="checkbox" name="show[]" value="num_comments" checked>&nbsp; see num_comments</label>
-						<br>
-						<label><input type="checkbox" name="show[]" value="ups" checked>&nbsp; see ups</label>
-						<br>
-						<label><input type="checkbox" name="show[]" value="downs" checked>&nbsp; see downs</label>
-						<br>
-						<label><input type="checkbox" name="show[]" value="score" checked>&nbsp; see score</label>
+
+					<div class="row">
+						<div class="col-sm-2 col-sm-offset-5">
+							<button type="submit"  class="btn btn-default form-control">Submit</button>
+						</div>
 					</div>
-					<div class="errors_block"></div>
-					<button type="submit"  class="btn btn-default">Submit</button>
+
 				</form>
 					<br>
 				<textarea class="results_block form-control" style="height:300px"></textarea>
