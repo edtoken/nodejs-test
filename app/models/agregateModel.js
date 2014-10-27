@@ -12,7 +12,7 @@ var AgregateModel = function(data) {
 	this.data = data;
 	this.options = {
 		order_by:'count',
-		order_dir:1,
+		order_dir:true,
 		separator:",",
 		fields:[],
 		fieldsDefault: ["gilded", "num_comments", "ups", "downs", "score"]
@@ -22,7 +22,7 @@ var AgregateModel = function(data) {
 		this.options.order_by = this.data.order_by;
 	}
 
-	this.options.order_dir = (this.data.order_dir === "0")? 0 : 1;
+	this.options.order_dir = (this.data.order_dir === "0")? false : true;
 
 	this.options.fields = _.filter(this.data.show, function(name) {
 		return this.options.fieldsDefault.indexOf(name) >= 0;
@@ -100,7 +100,7 @@ AgregateModel.prototype._parseRequest = function(obj) {
 		}
 	}, this);
 
-	if(this.options.order_dir === 0){
+	if(!this.options.order_dir){
 		responseOut.reverse();
 	}
 
