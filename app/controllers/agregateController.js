@@ -12,7 +12,7 @@ var AgregateModelClass = require('../models/agregateModel');
  */
 exports.index = function (req, res) {
     var AgregateModel = new AgregateModelClass(req.query);
-    AgregateModel.getCSVSTR(function(result){
+    AgregateModel.getCSVSTR(function (result) {
         res.json(result);
     });
     return;
@@ -23,7 +23,7 @@ exports.index = function (req, res) {
  * @param req
  * @param res
  */
-exports.savefile = function(req, res) {
+exports.savefile = function (req, res) {
 
     var AgregateModel = new AgregateModelClass(req.query);
     AgregateModel.getCSVSTR(function (result) {

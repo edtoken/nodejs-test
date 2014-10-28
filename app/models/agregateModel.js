@@ -8,7 +8,7 @@ http = require('http');
  * @param data query get parameters
  * @constructor
  */
-var AgregateModel = function(data) {
+var AgregateModel = function (data) {
 
     this.data = data;
     this.options = {
@@ -19,13 +19,13 @@ var AgregateModel = function(data) {
         fieldsDefault: ["gilded", "num_comments", "ups", "downs", "score"]
     };
 
-    if(this.data.order_by && this.options.fieldsDefault.indexOf(this.data.order_by) >= 0){
+    if (this.data.order_by && this.options.fieldsDefault.indexOf(this.data.order_by) >= 0) {
         this.options.order_by = this.data.order_by;
     }
 
     this.options.order_dir = (this.data.order_dir === "0") ? false : true;
 
-    this.options.fields = _.filter(this.data.show, function(name) {
+    this.options.fields = _.filter(this.data.show, function (name) {
         return this.options.fieldsDefault.indexOf(name) >= 0;
     }, this);
 };
@@ -50,14 +50,14 @@ AgregateModel.prototype._getErrorObj = function (msg) {
 AgregateModel.prototype._agregateItemData = function (oldObj, newData) {
 
     var obj = {};
-    if(_.isObject(oldObj)) {
+    if (_.isObject(oldObj)) {
         obj = oldObj;
     }
 
     obj.domain = newData.domain;
     obj.count = (obj.count) ? obj.count + 1 : 1;
 
-    _.each(this.options.fieldsDefault, function(name) {
+    _.each(this.options.fieldsDefault, function (name) {
         if (this.options.fields.indexOf(name) >= 0) {
             if (_.has(obj, name)) {
                 obj[name] += parseInt(newData[name])
@@ -79,7 +79,7 @@ AgregateModel.prototype._agregateItemData = function (oldObj, newData) {
 
 AgregateModel.prototype._parseRequest = function (obj) {
 
-    if(!_.has(obj, "data") || !_.has(obj.data, "children")) {
+    if (!_.has(obj, "data") || !_.has(obj.data, "children")) {
         return this._getErrorObj("invalid json data");
     }
 
@@ -88,18 +88,18 @@ AgregateModel.prototype._parseRequest = function (obj) {
     var items = obj.data.children;
 
     _.each(items, function (item) {
-        if(item.data && item.data.domain) {
+        if (item.data && item.data.domain) {
             response[item.data.domain] = this._agregateItemData(response[item.data.domain], item.data);
         }
     }, this);
 
-    responseOut = _.sortBy(response, function(item){
-        if(item[this.options.order_by]){
+    responseOut = _.sortBy(response, function (item) {
+        if (item[this.options.order_by]) {
             return item[this.options.order_by];
         }
     }, this);
 
-    if(!this.options.order_dir){
+    if (!this.options.order_dir) {
         responseOut.reverse();
     }
 
@@ -112,7 +112,7 @@ AgregateModel.prototype._parseRequest = function (obj) {
  * @param context
  * @private
  */
-AgregateModel.prototype._getRequest = function(callback, context) {
+AgregateModel.prototype._getRequest = function (callback, context) {
 
     var self = context || this;
 
@@ -139,7 +139,7 @@ AgregateModel.prototype._getRequest = function(callback, context) {
  * @returns {string}
  * @private
  */
-AgregateModel.prototype._createCSVResponse = function(obj) {
+AgregateModel.prototype._createCSVResponse = function (obj) {
 
     var separator = this.data.separator || this.options.separator;
     var responseCSV = "";
@@ -158,22 +158,22 @@ AgregateModel.prototype._createCSVResponse = function(obj) {
  * @param callback
  * @returns {*}
  */
-AgregateModel.prototype.getCSVSTR = function(callback) {
+AgregateModel.prototype.getCSVSTR = function (callback) {
 
-    if(!this.data.url) {
+    if (!this.data.url) {
         return callback(this._getErrorObj("please insert url"));
     }
 
-    this._getRequest(function(resp) {
+    this._getRequest(function (resp) {
 
         try {
 
             var jsonData = JSON.parse(resp);
             var agregateData = this._parseRequest(jsonData);
             var CSV = this._createCSVResponse(agregateData);
-            callback({data:CSV, error:false, message:"csv response"});
+            callback({data: CSV, error: false, message: "csv response"});
 
-        } catch(e) {
+        } catch (e) {
             return callback(this._getErrorObj("error parsing json"));
         }
 
