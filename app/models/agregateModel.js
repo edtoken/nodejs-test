@@ -9,24 +9,25 @@ http = require('http');
  * @constructor
  */
 var AgregateModel = function(data) {
-	this.data = data;
-	this.options = {
-		order_by:'count',
-		order_dir:true,
-		separator:",",
-		fields:[],
-		fieldsDefault: ["gilded", "num_comments", "ups", "downs", "score"]
-	};
 
-	if(this.data.order_by && this.options.fieldsDefault.indexOf(this.data.order_by) >= 0){
-		this.options.order_by = this.data.order_by;
-	}
+    this.data = data;
+    this.options = {
+        order_by: 'count',
+        order_dir: true,
+        separator: ",",
+        fields: [],
+        fieldsDefault: ["gilded", "num_comments", "ups", "downs", "score"]
+    };
 
-	this.options.order_dir = (this.data.order_dir === "0")? false : true;
+    if(this.data.order_by && this.options.fieldsDefault.indexOf(this.data.order_by) >= 0){
+        this.options.order_by = this.data.order_by;
+    }
 
-	this.options.fields = _.filter(this.data.show, function(name) {
-		return this.options.fieldsDefault.indexOf(name) >= 0;
-	}, this);
+    this.options.order_dir = (this.data.order_dir === "0") ? false : true;
+
+    this.options.fields = _.filter(this.data.show, function(name) {
+        return this.options.fieldsDefault.indexOf(name) >= 0;
+    }, this);
 };
 
 /**
@@ -35,8 +36,8 @@ var AgregateModel = function(data) {
  * @returns {{error: number, message: *, data: boolean}}
  * @private
  */
-AgregateModel.prototype._getErrorObj = function(msg) {
-	return {error:1, message:msg, data:false};
+AgregateModel.prototype._getErrorObj = function (msg) {
+    return {error: 1, message: msg, data: false};
 };
 
 /**
@@ -46,28 +47,27 @@ AgregateModel.prototype._getErrorObj = function(msg) {
  * @returns {{}}
  * @private
  */
-AgregateModel.prototype._agregateItemData = function(oldObj, newData) {
+AgregateModel.prototype._agregateItemData = function (oldObj, newData) {
 
-	var obj = {};
-	
-	if(_.isObject(oldObj)) {
-		obj = oldObj;
-	}
+    var obj = {};
+    if(_.isObject(oldObj)) {
+        obj = oldObj;
+    }
 
-	obj.domain = newData.domain;
-	obj.count = (obj.count) ? obj.count + 1 : 1;
+    obj.domain = newData.domain;
+    obj.count = (obj.count) ? obj.count + 1 : 1;
 
-	_.each(this.options.fieldsDefault, function(name) {
-		if (this.options.fields.indexOf(name) >= 0) {
-			if (_.has(obj, name)) {
-				obj[name] += parseInt(newData[name])
-			} else {
-				obj[name] = parseInt(newData[name]);
-			}
-		}
-	}, this);
+    _.each(this.options.fieldsDefault, function(name) {
+        if (this.options.fields.indexOf(name) >= 0) {
+            if (_.has(obj, name)) {
+                obj[name] += parseInt(newData[name])
+            } else {
+                obj[name] = parseInt(newData[name]);
+            }
+        }
+    }, this);
 
-	return obj;
+    return obj;
 };
 
 /**
@@ -77,34 +77,33 @@ AgregateModel.prototype._agregateItemData = function(oldObj, newData) {
  * @private
  */
 
-AgregateModel.prototype._parseRequest = function(obj) {
+AgregateModel.prototype._parseRequest = function (obj) {
 
+    if(!_.has(obj, "data") || !_.has(obj.data, "children")) {
+        return this._getErrorObj("invalid json data");
+    }
 
-	if(!_.has(obj, "data") || !_.has(obj.data, "children")) {
-		return this._getErrorObj("invalid json data");
-	}
+    var responseOut;
+    var response = {};
+    var items = obj.data.children;
 
-	var responseOut;
-	var response = {};
-	var items = obj.data.children;
+    _.each(items, function (item) {
+        if(item.data && item.data.domain) {
+            response[item.data.domain] = this._agregateItemData(response[item.data.domain], item.data);
+        }
+    }, this);
 
-	_.each(items, function(item) {
-		if(item.data && item.data.domain) {
-			response[item.data.domain] = this._agregateItemData(response[item.data.domain], item.data);
-		}
-	}, this);
+    responseOut = _.sortBy(response, function(item){
+        if(item[this.options.order_by]){
+            return item[this.options.order_by];
+        }
+    }, this);
 
-	responseOut = _.sortBy(response, function(item){
-		if(item[this.options.order_by]){
-			return item[this.options.order_by];
-		}
-	}, this);
+    if(!this.options.order_dir){
+        responseOut.reverse();
+    }
 
-	if(!this.options.order_dir){
-		responseOut.reverse();
-	}
-
-	return responseOut;
+    return responseOut;
 };
 
 /**
@@ -115,23 +114,23 @@ AgregateModel.prototype._parseRequest = function(obj) {
  */
 AgregateModel.prototype._getRequest = function(callback, context) {
 
-	var self = context || this;
+    var self = context || this;
 
-	http.get(this.data.url, function(r) {
+    http.get(this.data.url, function (r) {
 
-		var str = '';
+        var str = '';
 
-		r.on("data", function(chunk) {
-			str += chunk;
-		});
+        r.on("data", function (chunk) {
+            str += chunk;
+        });
 
-		r.on("end", function() {
-			callback.call(self, str);
-		});
+        r.on("end", function () {
+            callback.call(self, str);
+        });
 
-	}).on("error", function() {
-		callback.call(self, self._getErrorObj("request error"));
-	});
+    }).on("error", function () {
+        callback.call(self, self._getErrorObj("request error"));
+    });
 };
 
 /**
@@ -142,15 +141,15 @@ AgregateModel.prototype._getRequest = function(callback, context) {
  */
 AgregateModel.prototype._createCSVResponse = function(obj) {
 
-	var separator = this.data.separator || this.options.separator;
-	var responseCSV = "";
+    var separator = this.data.separator || this.options.separator;
+    var responseCSV = "";
 
-	_.each(obj, function(val, domain) {
-		responseCSV += _.values(val).join(separator);
-		responseCSV += "\r\n";
-	});
+    _.each(obj, function (val, domain) {
+        responseCSV += _.values(val).join(separator);
+        responseCSV += "\r\n";
+    });
 
-	return responseCSV;
+    return responseCSV;
 
 };
 
@@ -161,26 +160,26 @@ AgregateModel.prototype._createCSVResponse = function(obj) {
  */
 AgregateModel.prototype.getCSVSTR = function(callback) {
 
-	if(!this.data.url) {
-		return callback(this._getErrorObj("please insert url"));
-	}
+    if(!this.data.url) {
+        return callback(this._getErrorObj("please insert url"));
+    }
 
-	this._getRequest(function(resp) {
+    this._getRequest(function(resp) {
 
-		try {
-			
-			var jsonData = JSON.parse(resp);
-			var agregateData = this._parseRequest(jsonData);
-			var CSV = this._createCSVResponse(agregateData);
-			callback({data:CSV, error:false, message:"csv response"});
+        try {
 
-		} catch(e) {
-			return callback(this._getErrorObj("error parsing json"));
-		}
+            var jsonData = JSON.parse(resp);
+            var agregateData = this._parseRequest(jsonData);
+            var CSV = this._createCSVResponse(agregateData);
+            callback({data:CSV, error:false, message:"csv response"});
 
-	}, this);
+        } catch(e) {
+            return callback(this._getErrorObj("error parsing json"));
+        }
 
-	return this;
+    }, this);
+
+    return this;
 };
 
 module.exports = AgregateModel;
